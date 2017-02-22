@@ -1,7 +1,7 @@
 package mt.client;
 
 import mt.comm.ClientComm;
-
+//Novo comentario 1
 /**
  * 
  * The MicroTraderClient should use the {@link ClientComm} interface to
