@@ -124,7 +124,7 @@ public class MicroServerTest {
 	@Test
 	public void testStart() throws Exception {
 		when(serverComm.getNextMessage()).thenReturn(msg1).thenReturn(msg2).thenReturn(msg3).thenReturn(msg4).thenReturn(msg5).thenReturn(msg6).thenReturn(null);
-		System.out.println("Jenkins TEST");
+		
 		ms.start(serverComm);
 		
 		verify(serverComm, atLeastOnce()).sendOrder("userB", Order.createSellOrder("userA", "MSFT", 5, 20.0) );
