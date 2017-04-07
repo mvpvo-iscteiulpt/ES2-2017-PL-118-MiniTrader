@@ -1,5 +1,7 @@
 package mt.server;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +14,19 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import mt.Order;
 import mt.comm.ServerComm;
@@ -59,6 +74,9 @@ public class MicroServer implements MicroTraderServer {
 	
 	/** The value is {@value #EMPTY} */
 	public static final int EMPTY = 0;
+	
+	private int ultimoID;
+	private Document doc;
 
 	/**
 	 * Constructor
@@ -67,6 +85,66 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Creating the server...");
 		orderMap = new HashMap<String, Set<Order>>();
 		updatedOrders = new HashSet<>();
+		
+		//----------------------------------------------------
+		
+		try {	
+	         File inputFile = new File("ficheiro.xml");
+	         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+	         doc = dBuilder.parse(inputFile);
+	         doc.getDocumentElement().normalize();         
+	         NodeList nList = doc.getElementsByTagName("Order");
+	         System.out.println("----- Navigate the tree nodes -----");
+	         for (int temp = 0; temp < nList.getLength(); temp++) {
+	            Node nNode = nList.item(temp);
+	            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+	               Element eElement = (Element) nNode;
+	               
+	               String id = eElement.getAttribute("Id");
+	               String name = eElement.getAttribute("Customer");
+	               String type = eElement.getAttribute("Type");
+	               String prod = eElement.getAttribute("Stock");
+	               String units = eElement.getAttribute("Units");
+	               String price = eElement.getAttribute("Price");
+	               
+	               //visualizar o orderMap inicial
+	               System.out.println("["+id+"]"+ " " + name + " " + type + " " + prod + " " + " x " + units + " " + price + "€");
+	               
+	               //conversoes para construir ordem
+	               int idInt = Integer.valueOf(id);
+	               if(idInt>ultimoID){
+	            	   ultimoID=idInt;
+	               }
+	               boolean typeBoolean;
+	               if(type=="buy"){
+	            	   typeBoolean= true;
+	               }
+	               else{
+	            	   typeBoolean=false;
+	               }
+	               int numberOfUnits = Integer.valueOf(units);
+	               double priceDouble = Double.valueOf(price);
+	            	   
+	               //construir ordem
+	               Order o = new Order(name,typeBoolean,prod,numberOfUnits,priceDouble);
+	               o.setServerOrderID(idInt);
+	               
+	               //colocar ordem no orderMap
+	               if( orderMap.containsKey(name)){
+	            	   orderMap.get(name).add(o);
+	               }
+	               else{
+	            	   Set<Order> set = new HashSet<Order>();
+	            	   set.add(o);
+	            	   orderMap.put(name, set);
+	               }
+	            }
+	         }  
+	      } catch (Exception e) { e.printStackTrace(); }
+		System.out.println(orderMap);
+		
+		
 	}
 
 	@Override
@@ -101,10 +179,12 @@ public class MicroServer implements MicroTraderServer {
 					try {
 						verifyUserConnected(msg);
 						if(msg.getOrder().getServerOrderID() == EMPTY){
-							msg.getOrder().setServerOrderID(id++);
+							ultimoID++;
+							msg.getOrder().setServerOrderID(ultimoID);
 						}
 						notifyAllClients(msg.getOrder());
 						processNewOrder(msg);
+						poeNoLog(msg.getOrder());
 					} catch (ServerException e) {
 						serverComm.sendError(msg.getSenderNickname(), e.getMessage());
 					}
@@ -364,6 +444,32 @@ public class MicroServer implements MicroTraderServer {
 				}
 			}
 		}
+	}
+	
+	private void poeNoLog(Order o){
+        // Create new element Order with attributes
+        Element newElement = doc.createElement("Order");
+        newElement.setAttribute("Id", "244");
+        newElement.setAttribute("Customer", "Nikki");
+        newElement.setAttribute("Type", "Buy");
+        newElement.setAttribute("Stock", "PT");
+        newElement.setAttribute("Units", "15");
+        newElement.setAttribute("Price", "20");
+ 
+        // Add new node to XML document root element
+        Node n = doc.getDocumentElement();
+        n.appendChild(newElement);
+        
+        // Save XML document
+        try{
+        	Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        	transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        	StreamResult result = new StreamResult(new FileOutputStream("ficheiro.xml"));
+        	DOMSource source = new DOMSource(doc);
+        	transformer.transform(source, result);
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
 	}
 
 }
