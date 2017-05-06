@@ -123,7 +123,7 @@ public class MicroServer implements MicroTraderServer {
 		}
 		LOGGER.log(Level.INFO, "Shutting Down Server...");
 	}
-
+	//bla
 
 	/**
 	 * Verify if user is already connected
@@ -182,6 +182,7 @@ public class MicroServer implements MicroTraderServer {
 			}
 		}
 		
+		//comment
 		// sort the orders to send to clients by server id
 		Collections.sort(ordersToSend, new Comparator<Order>() {
 			@Override
