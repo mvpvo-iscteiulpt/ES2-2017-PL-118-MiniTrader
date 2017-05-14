@@ -67,6 +67,7 @@ public class MicroServer implements MicroTraderServer {
 	private int ultimoID;
 	
 	private int MAX_UNITS_NUMBER = 10;
+	private int MAX_SELLS_NUMBER = 5;
 
 	/**
 	 * Constructor
@@ -231,11 +232,25 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Processing new order...");
 
 		Order o = msg.getOrder();
-		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			throw new ServerException("Insuffiecient number of units. Order rejected.");
 		}
 		else{
+			
+			if(o.isSellOrder()){
+				Set<Order> arvore = orderMap.get(o.getNickname());
+				int vendas = 0;
+				for(Order i : arvore){
+					if(i.isSellOrder()){
+						vendas++;
+						System.out.println("passa " + vendas);
+					}
+					if(vendas >= MAX_SELLS_NUMBER){
+						throw new ServerException("Too many sell orders from same client. Order rejected.");
+					}
+				}
+			}
+			
 			// save the order on map
 			saveOrder(o);
 	
