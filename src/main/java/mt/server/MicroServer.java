@@ -235,7 +235,6 @@ public class MicroServer implements MicroTraderServer {
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			throw new ServerException("Insuffiecient number of units. Order rejected.");
 		}
-		
 		else{
 			// save the order on map
 			saveOrder(o);
