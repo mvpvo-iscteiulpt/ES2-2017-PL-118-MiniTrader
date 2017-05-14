@@ -229,12 +229,11 @@ public class MicroServer implements MicroTraderServer {
 	 *            the message sent by the client
 	 */
 	private void processNewOrder(ServerSideMessage msg) throws ServerException {
-//		LOGGER.log(Level.INFO, "Processing new order...");
+		LOGGER.log(Level.INFO, "Processing new order...");
 		
 
 		Order o = msg.getOrder();
-//		System.out.println("antes:");
-//		mostraOrdens();
+
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			throw new ServerException("Insufficient number of units. Order rejected.");
 		}
@@ -293,8 +292,6 @@ public class MicroServer implements MicroTraderServer {
 			// replace full orderSet back into orderMap
 			orderMap.put(o.getNickname(), clientOrders);
 		}
-//		System.out.println("depois:");
-		mostraOrdens();
 	}
 	
 	/**
@@ -420,7 +417,7 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
-	private void mostraOrdens(){
+	private void showOrders(){
 		Set<String> keys = orderMap.keySet();
 		for(String s : keys){
 			Set<Order> ordens = orderMap.get(s);
