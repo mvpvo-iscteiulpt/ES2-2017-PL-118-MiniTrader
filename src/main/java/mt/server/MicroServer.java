@@ -229,16 +229,20 @@ public class MicroServer implements MicroTraderServer {
 	 *            the message sent by the client
 	 */
 	private void processNewOrder(ServerSideMessage msg) throws ServerException {
-		LOGGER.log(Level.INFO, "Processing new order...");
+//		LOGGER.log(Level.INFO, "Processing new order...");
+		
 
 		Order o = msg.getOrder();
+//		System.out.println("antes:");
+//		mostraOrdens();
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			throw new ServerException("Insuffiecient number of units. Order rejected.");
 		}
 		else{
 			
+			Set<Order> clientOrders = orderMap.get(o.getNickname());
+			
 			if(o.isSellOrder()){
-				Set<Order> clientOrders = orderMap.get(o.getNickname());
 				int sellsNumber = 0;
 				for(Order i : clientOrders){
 					if(i.isSellOrder()){
@@ -249,10 +253,19 @@ public class MicroServer implements MicroTraderServer {
 					}
 				}
 			}
+			Set<Order> temp = new HashSet<Order>();
+			for(Order a : clientOrders){
+				if(o.getStock().equals(a.getStock())){
+					temp.add(a);
+					clientOrders.remove(a);
+				}
+			}
+			// place filtered orders (by stock and name) back in orderMap
+			orderMap.put(o.getNickname(), clientOrders);
 			
 			// save the order on map
 			saveOrder(o);
-	
+			
 			// if is buy order
 			if (o.isBuyOrder()) {
 				processBuy(msg.getOrder());
@@ -271,7 +284,17 @@ public class MicroServer implements MicroTraderServer {
 	
 			// reset the set of changed orders
 			updatedOrders = new HashSet<>();
+			
+			//put removed orders back in the client orderset again
+			for(Order i : temp){
+				clientOrders.add(i);
+			}
+			
+			// replace full orderSet back into orderMap
+			orderMap.put(o.getNickname(), clientOrders);
 		}
+//		System.out.println("depois:");
+		mostraOrdens();
 	}
 	
 	/**
@@ -394,6 +417,22 @@ public class MicroServer implements MicroTraderServer {
 					it.remove();
 				}
 			}
+		}
+	}
+	
+	private void mostraOrdens(){
+		Set<String> keys = orderMap.keySet();
+		for(String s : keys){
+			Set<Order> ordens = orderMap.get(s);
+			System.out.println("--------");
+			for(Order o : ordens){
+				System.out.println(	"[" + o.getNickname()+
+									";" + o.getStock()+
+									";" + o.getNumberOfUnits()+
+									";" + o.getPricePerUnit()+
+									"]");
+			}
+			System.out.println("---------");
 		}
 	}
 	
