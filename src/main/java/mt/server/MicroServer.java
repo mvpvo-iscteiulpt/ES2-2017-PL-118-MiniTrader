@@ -65,6 +65,8 @@ public class MicroServer implements MicroTraderServer {
 	public static final int EMPTY = 0;
 	
 	private int ultimoID;
+	
+	private int MAX_UNITS_NUMBER = 10;
 
 	/**
 	 * Constructor
@@ -230,28 +232,32 @@ public class MicroServer implements MicroTraderServer {
 
 		Order o = msg.getOrder();
 		
-		// save the order on map
-		saveOrder(o);
-
-		// if is buy order
-		if (o.isBuyOrder()) {
-			processBuy(msg.getOrder());
+		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
+			throw new ServerException("Insufficient number of units. Order rejected.");
 		}
-		
-		// if is sell order
-		if (o.isSellOrder()) {
-			processSell(msg.getOrder());
+		else{
+			// save the order on map
+			saveOrder(o);
+	
+			// if is buy order
+			if (o.isBuyOrder()) {
+				processBuy(msg.getOrder());
+			}
+			
+			// if is sell order
+			if (o.isSellOrder()) {
+				processSell(msg.getOrder());
+			}
+	
+			// notify clients of changed order
+			notifyClientsOfChangedOrders();
+	
+			// remove all fulfilled orders
+			removeFulfilledOrders();
+	
+			// reset the set of changed orders
+			updatedOrders = new HashSet<>();
 		}
-
-		// notify clients of changed order
-		notifyClientsOfChangedOrders();
-
-		// remove all fulfilled orders
-		removeFulfilledOrders();
-
-		// reset the set of changed orders
-		updatedOrders = new HashSet<>();
-
 	}
 	
 	/**
