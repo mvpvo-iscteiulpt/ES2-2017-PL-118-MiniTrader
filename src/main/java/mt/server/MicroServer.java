@@ -236,7 +236,7 @@ public class MicroServer implements MicroTraderServer {
 //		System.out.println("antes:");
 //		mostraOrdens();
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
-			throw new ServerException("Insuffiecient number of units. Order rejected.");
+			throw new ServerException("Insufficient number of units. Order rejected.");
 		}
 		else{
 			
@@ -432,7 +432,6 @@ public class MicroServer implements MicroTraderServer {
 									";" + o.getPricePerUnit()+
 									"]");
 			}
-			System.out.println("---------");
 		}
 	}
 	
