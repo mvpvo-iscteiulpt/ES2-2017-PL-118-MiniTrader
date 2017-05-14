@@ -238,15 +238,14 @@ public class MicroServer implements MicroTraderServer {
 		else{
 			
 			if(o.isSellOrder()){
-				Set<Order> arvore = orderMap.get(o.getNickname());
-				int vendas = 0;
-				for(Order i : arvore){
+				Set<Order> clientOrders = orderMap.get(o.getNickname());
+				int sellsNumber = 0;
+				for(Order i : clientOrders){
 					if(i.isSellOrder()){
-						vendas++;
-						System.out.println("passa " + vendas);
+						sellsNumber++;
 					}
-					if(vendas >= MAX_SELLS_NUMBER){
-						throw new ServerException("Too many sell orders from same client. Order rejected.");
+					if(sellsNumber >= MAX_SELLS_NUMBER){
+						throw new ServerException("Too many sell orders from same client. Maximum is " + MAX_SELLS_NUMBER + ". Order rejected.");
 					}
 				}
 			}
