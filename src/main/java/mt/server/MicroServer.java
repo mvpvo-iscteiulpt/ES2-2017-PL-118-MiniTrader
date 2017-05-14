@@ -233,10 +233,9 @@ public class MicroServer implements MicroTraderServer {
 		Order o = msg.getOrder();
 		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
-			throw new ServerException("Erro teste");
+			throw new ServerException("Insuffiecient number of units. Order rejected.");
 		}
 		else{
-			System.out.println("sucesso");
 			// save the order on map
 			saveOrder(o);
 	
