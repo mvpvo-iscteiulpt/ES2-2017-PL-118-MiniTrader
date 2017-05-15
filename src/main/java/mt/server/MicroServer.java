@@ -1,5 +1,7 @@
 package mt.server;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +15,17 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import mt.Order;
 import mt.comm.ServerComm;
@@ -22,6 +34,7 @@ import mt.comm.impl.ServerCommImpl;
 import mt.exception.ServerException;
 import mt.filter.AnalyticsFilter;
 
+
 /**
  * MicroTraderServer implementation. This class should be responsible
  * to do the business logic of stock transactions between buyers and sellers.
@@ -29,8 +42,6 @@ import mt.filter.AnalyticsFilter;
  * @author Group 78
  *
  */
-
-//ASIA
 public class MicroServer implements MicroTraderServer {
 	
 	public static void main(String[] args) {
@@ -67,6 +78,8 @@ public class MicroServer implements MicroTraderServer {
 	private int ultimoID;
 	
 	private int MAX_UNITS_NUMBER = 10;
+	private int MAX_SELLS_NUMBER = 5;
+	private boolean PERSISTENCE = true;
 
 	/**
 	 * Constructor
@@ -229,18 +242,41 @@ public class MicroServer implements MicroTraderServer {
 	 */
 	private void processNewOrder(ServerSideMessage msg) throws ServerException {
 		LOGGER.log(Level.INFO, "Processing new order...");
+		
 
 		Order o = msg.getOrder();
 		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
-			System.out.println("insucesso");
 			throw new ServerException("Insufficient number of units. Order rejected.");
 		}
 		else{
-			System.out.println("sucesso");
+			
+			Set<Order> clientOrders = orderMap.get(o.getNickname());
+			
+			if(o.isSellOrder()){
+				int sellsNumber = 0;
+				for(Order i : clientOrders){
+					if(i.isSellOrder()){
+						sellsNumber++;
+					}
+					if(sellsNumber >= MAX_SELLS_NUMBER){
+						throw new ServerException("Too many sell orders from same client. Maximum is " + MAX_SELLS_NUMBER + ". Order rejected.");
+					}
+				}
+			}
+			Set<Order> temp = new HashSet<Order>();
+			for(Order a : clientOrders){
+				if(o.getStock().equals(a.getStock())){
+					temp.add(a);
+					clientOrders.remove(a);
+				}
+			}
+			// place filtered orders (by stock and name) back in orderMap
+			orderMap.put(o.getNickname(), clientOrders);
+			
 			// save the order on map
 			saveOrder(o);
-	
+			
 			// if is buy order
 			if (o.isBuyOrder()) {
 				processBuy(msg.getOrder());
@@ -259,6 +295,19 @@ public class MicroServer implements MicroTraderServer {
 	
 			// reset the set of changed orders
 			updatedOrders = new HashSet<>();
+			
+			//put removed orders back in the client orderset again
+			for(Order i : temp){
+				clientOrders.add(i);
+			}
+			
+			// replace full orderSet back into orderMap
+			orderMap.put(o.getNickname(), clientOrders);
+			
+			//persistence
+			if(PERSISTENCE){
+				saveToFile(o);
+			}
 		}
 	}
 	
@@ -385,6 +434,51 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
+	private void showOrders(){
+		Set<String> keys = orderMap.keySet();
+		for(String s : keys){
+			Set<Order> ordens = orderMap.get(s);
+			System.out.println("--------");
+			for(Order o : ordens){
+				System.out.println(	"[" + o.getNickname()+
+									";" + o.getStock()+
+									";" + o.getNumberOfUnits()+
+									";" + o.getPricePerUnit()+
+									"]");
+			}
+		}
+	}
+	
+	private void saveToFile(Order o){
+		try {	
+	         File inputFile = new File("MicroTraderPersistence.xml");
+	         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+	         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+	         Document doc = dBuilder.parse(inputFile);
+	         doc.getDocumentElement().normalize();         
+	         
+	         // Create new element Order with attributes
+	         Element newElement = doc.createElement("Order");
+	         newElement.setAttribute("Id", ""+o.getServerOrderID());
+	         newElement.setAttribute("Type", o.isBuyOrder()?"Buy":"Sell");
+	         newElement.setAttribute("Stock", o.getStock());
+	         newElement.setAttribute("Units", ""+o.getNumberOfUnits());
+	         newElement.setAttribute("Price", ""+o.getPricePerUnit());
+	         newElement.setAttribute("Customer", o.getNickname());
+	  
+	         // Add new node to XML document root element
+	         Node n = doc.getDocumentElement();
+	         n.appendChild(newElement);
+	         
+	         // Save XML document
+	         Transformer transformer = TransformerFactory.newInstance().newTransformer();
+	         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	         StreamResult result = new StreamResult(new FileOutputStream("MicroTraderPersistence.xml"));
+	         DOMSource source = new DOMSource(doc);
+	         transformer.transform(source, result);
+	         
+	      } catch (Exception e) { e.printStackTrace(); }
+	}
 
 
 }
