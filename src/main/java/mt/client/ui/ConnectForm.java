@@ -28,7 +28,7 @@ public class ConnectForm extends javax.swing.JDialog {
 
 		hostLabel = new javax.swing.JLabel();
 		niknameLabel = new javax.swing.JLabel();
-		hostTxt = new javax.swing.JTextField();
+		hostTxt = new javax.swing.JTextField("localhost");
 		nicknameTxt = new javax.swing.JTextField();
 		connectBtn = new javax.swing.JButton();
 		cancelBtn = new javax.swing.JButton();
