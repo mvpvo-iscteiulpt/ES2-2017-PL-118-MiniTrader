@@ -247,7 +247,7 @@ public class MicroServer implements MicroTraderServer {
 		Order o = msg.getOrder();
 		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
-			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", 2);
 		}
 		else{
 			
