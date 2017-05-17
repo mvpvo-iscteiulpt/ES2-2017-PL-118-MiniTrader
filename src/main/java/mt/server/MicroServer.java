@@ -88,8 +88,10 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Starting Server...");
 
 		this.serverComm = serverComm;
-
+		
 		ServerSideMessage msg = null;
+		
+		JOptionPane.showMessageDialog(null, "Server running.", "Europe Version", 1);
 		while ((msg = serverComm.getNextMessage()) != null) {
 			ServerSideMessage.Type type = msg.getType();
 			
