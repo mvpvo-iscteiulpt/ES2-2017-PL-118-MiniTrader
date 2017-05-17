@@ -246,6 +246,7 @@ public class MicroServer implements MicroTraderServer {
 		
 
 		Order o = msg.getOrder();
+		int units = o.getNumberOfUnits();
 		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", 2);
@@ -278,7 +279,8 @@ public class MicroServer implements MicroTraderServer {
 			
 			//persistence
 			if(PERSISTENCE){
-				saveToFile(o);
+				System.out.println("antes do save to file: " + o.getNumberOfUnits());
+				saveToFile(o, units);
 			}
 		}
 	}
@@ -421,7 +423,7 @@ public class MicroServer implements MicroTraderServer {
 	}
 	
 	
-	private void saveToFile(Order o){
+	private void saveToFile(Order o, int units){
 		try {	
 			
 	         File inputFile = new File("C:\\Users\\Miguel\\git\\ES2-2017-PL-118-MiniTrader\\MicroTraderPersistenceAS.xml");
@@ -435,7 +437,7 @@ public class MicroServer implements MicroTraderServer {
 	         newElement.setAttribute("Id", ""+o.getServerOrderID());
 	         newElement.setAttribute("Type", o.isBuyOrder()?"Buy":"Sell");
 	         newElement.setAttribute("Stock", o.getStock());
-	         newElement.setAttribute("Units", ""+o.getNumberOfUnits());
+	         newElement.setAttribute("Units", ""+units);
 	         newElement.setAttribute("Price", ""+o.getPricePerUnit());
 	         newElement.setAttribute("Customer", o.getNickname());
 	  
