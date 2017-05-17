@@ -248,6 +248,7 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Processing new order...");
 
 		Order o = msg.getOrder();
+		int units = o.getNumberOfUnits();
 		Set<Order> clientOrders = orderMap.get(o.getNickname());
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", 2);
@@ -282,7 +283,7 @@ public class MicroServer implements MicroTraderServer {
 			
 			// persistence
 			if(PERSISTENCE){
-				saveToFile(o);
+				saveToFile(o, units);
 			}
 		}
 	}
@@ -425,9 +426,9 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
-	private void saveToFile(Order o){
+	private void saveToFile(Order o, int units){
 		try {	
-	         File inputFile = new File("MicroTraderPersistenceUS.xml");
+	         File inputFile = new File("C:\\Users\\Miguel\\git\\ES2-2017-PL-118-MiniTrader\\MicroTraderPersistenceUS.xml");
 	         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	         Document doc = dBuilder.parse(inputFile);
@@ -438,7 +439,7 @@ public class MicroServer implements MicroTraderServer {
 	         newElement.setAttribute("Id", ""+o.getServerOrderID());
 	         newElement.setAttribute("Type", o.isBuyOrder()?"Buy":"Sell");
 	         newElement.setAttribute("Stock", o.getStock());
-	         newElement.setAttribute("Units", ""+o.getNumberOfUnits());
+	         newElement.setAttribute("Units", ""+units);
 	         newElement.setAttribute("Price", ""+o.getPricePerUnit());
 	  
 	         // Add new node to XML document root element
@@ -448,7 +449,7 @@ public class MicroServer implements MicroTraderServer {
 	         // Save XML document
 	         Transformer transformer = TransformerFactory.newInstance().newTransformer();
 	         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	         StreamResult result = new StreamResult(new FileOutputStream("MicroTraderPersistenceUS.xml"));
+	         StreamResult result = new StreamResult(new FileOutputStream("C:\\Users\\Miguel\\git\\ES2-2017-PL-118-MiniTrader\\MicroTraderPersistenceUS.xml"));
 	         DOMSource source = new DOMSource(doc);
 	         transformer.transform(source, result);
 	         
