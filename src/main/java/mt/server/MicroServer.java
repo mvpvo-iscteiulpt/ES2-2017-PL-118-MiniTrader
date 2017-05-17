@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -58,7 +59,7 @@ public class MicroServer implements MicroTraderServer {
 	private ServerComm serverComm;
 
 	/**
-	 * A map to sore clients and clients orders
+	 * A map to store clients and clients orders
 	 */
 	private Map<String, Set<Order>> orderMap;
 
@@ -140,7 +141,6 @@ public class MicroServer implements MicroTraderServer {
 		}
 		LOGGER.log(Level.INFO, "Shutting Down Server...");
 	}
-	//bla
 
 	/**
 	 * Verify if user is already connected
@@ -247,7 +247,7 @@ public class MicroServer implements MicroTraderServer {
 		Order o = msg.getOrder();
 		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
-			throw new ServerException("Insufficient number of units. Order rejected.");
+			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", JOptionPane.ERROR_MESSAGE);
 		}
 		else{
 			
@@ -438,7 +438,6 @@ public class MicroServer implements MicroTraderServer {
 		Set<String> keys = orderMap.keySet();
 		for(String s : keys){
 			Set<Order> ordens = orderMap.get(s);
-			System.out.println("--------");
 			for(Order o : ordens){
 				System.out.println(	"[" + o.getNickname()+
 									";" + o.getStock()+
