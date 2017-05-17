@@ -278,7 +278,7 @@ public class MicroServer implements MicroTraderServer {
 			
 			// persistence
 			if(PERSISTENCE){
-//				saveToFile(o);
+				saveToFile(o);
 			}
 		}
 	}
