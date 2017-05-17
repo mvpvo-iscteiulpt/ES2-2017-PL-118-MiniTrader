@@ -79,7 +79,6 @@ public class MicroServer implements MicroTraderServer {
 	private int ultimoID;
 	
 	private int MAX_UNITS_NUMBER = 10;
-	private int MAX_SELLS_NUMBER = 5;
 	private boolean PERSISTENCE = true;
 
 	/**
@@ -129,7 +128,7 @@ public class MicroServer implements MicroTraderServer {
 							ultimoID++;
 							msg.getOrder().setServerOrderID(ultimoID);
 						}
-						notifyAllClients(msg.getOrder());
+//						notifyAllClients(msg.getOrder());
 						processNewOrder(msg);
 					} catch (ServerException e) {
 						serverComm.sendError(msg.getSenderNickname(), e.getMessage());
@@ -245,7 +244,6 @@ public class MicroServer implements MicroTraderServer {
 		
 
 		Order o = msg.getOrder();
-		Set<Order> clientOrders = orderMap.get(o.getNickname());
 		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", 2);
@@ -273,6 +271,8 @@ public class MicroServer implements MicroTraderServer {
 	
 			// reset the set of changed orders
 			updatedOrders = new HashSet<>();
+			
+			notifyAllClients(o);
 			
 			//persistence
 			if(PERSISTENCE){
