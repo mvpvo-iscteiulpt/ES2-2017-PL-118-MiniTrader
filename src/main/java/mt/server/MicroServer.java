@@ -246,25 +246,14 @@ public class MicroServer implements MicroTraderServer {
 		LOGGER.log(Level.INFO, "Processing new order...");
 
 		Order o = msg.getOrder();
-		
+		Set<Order> clientOrders = orderMap.get(o.getNickname());
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
 			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", 2);
 		}
+		else if(o.isSellOrder()&&manySells(clientOrders)){
+			JOptionPane.showMessageDialog(null, "Too many sell orders from same client. Order rejected.", "Warning", 2);
+		}
 		else{
-			
-			if(o.isSellOrder()){
-				Set<Order> clientOrders = orderMap.get(o.getNickname());
-				int sellsNumber = 0;
-				for(Order i : clientOrders){
-					if(i.isSellOrder()){
-						sellsNumber++;
-					}
-					if(sellsNumber >= MAX_SELLS_NUMBER){
-						throw new ServerException("Too many sell orders from same client. Maximum is " + MAX_SELLS_NUMBER + ". Order rejected.");
-					}
-				}
-			}
-			
 			// save the order on map
 			saveOrder(o);
 	
@@ -414,6 +403,21 @@ public class MicroServer implements MicroTraderServer {
 					it.remove();
 				}
 			}
+		}
+	}
+	
+	private boolean manySells(Set<Order> clientOrders){
+		int sells = 0;
+		for(Order o : clientOrders){
+			if(o.isSellOrder()){
+				sells++;
+			}
+		}
+		if(sells >= MAX_SELLS_NUMBER){
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 	
