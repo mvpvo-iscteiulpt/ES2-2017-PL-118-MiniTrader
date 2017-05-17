@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -247,7 +248,7 @@ public class MicroServer implements MicroTraderServer {
 		Order o = msg.getOrder();
 		
 		if(o.getNumberOfUnits() < MAX_UNITS_NUMBER){
-			throw new ServerException("Insufficient number of units. Order rejected.");
+			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", 2);
 		}
 		else{
 			
@@ -288,7 +289,7 @@ public class MicroServer implements MicroTraderServer {
 			
 			// persistence
 			if(PERSISTENCE){
-				saveToFile(o);
+//				saveToFile(o);
 			}
 		}
 	}
