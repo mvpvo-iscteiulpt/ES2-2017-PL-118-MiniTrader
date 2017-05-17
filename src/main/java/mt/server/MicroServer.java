@@ -35,7 +35,7 @@ import mt.comm.impl.ServerCommImpl;
 import mt.exception.ServerException;
 import mt.filter.AnalyticsFilter;
 
-
+//bla
 /**
  * MicroTraderServer implementation. This class should be responsible
  * to do the business logic of stock transactions between buyers and sellers.
@@ -421,7 +421,8 @@ public class MicroServer implements MicroTraderServer {
 	
 	private void saveToFile(Order o){
 		try {	
-	         File inputFile = new File("MicroTraderPersistenceAS.xml");
+			
+	         File inputFile = new File("C:\\Users\\Miguel\\git\\ES2-2017-PL-118-MiniTrader\\MicroTraderPersistenceAS.xml");
 	         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 	         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 	         Document doc = dBuilder.parse(inputFile);
