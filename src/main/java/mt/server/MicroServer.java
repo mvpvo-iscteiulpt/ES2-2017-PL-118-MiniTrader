@@ -104,6 +104,8 @@ public class MicroServer implements MicroTraderServer {
 		this.serverComm = serverComm;
 
 		ServerSideMessage msg = null;
+		
+		JOptionPane.showMessageDialog(null, "Server running.", "U.S. Version", 1);
 		while ((msg = serverComm.getNextMessage()) != null) {
 			ServerSideMessage.Type type = msg.getType();
 			
