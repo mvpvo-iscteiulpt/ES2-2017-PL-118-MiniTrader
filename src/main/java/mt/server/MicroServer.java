@@ -251,15 +251,6 @@ public class MicroServer implements MicroTraderServer {
 			JOptionPane.showMessageDialog(null, "Insufficient number of units. Order rejected.", "Warning", 2);
 		}
 		else{
-			Set<Order> temp = new HashSet<Order>();
-			for(Order a : clientOrders){
-				if(o.getStock().equals(a.getStock())){
-					temp.add(a);
-					clientOrders.remove(a);
-				}
-			}
-			// place filtered orders (by stock and name) back in orderMap
-			orderMap.put(o.getNickname(), clientOrders);
 			
 			// save the order on map
 			saveOrder(o);
@@ -282,14 +273,6 @@ public class MicroServer implements MicroTraderServer {
 	
 			// reset the set of changed orders
 			updatedOrders = new HashSet<>();
-			
-			//put removed orders back in the client orderset again
-			for(Order i : temp){
-				clientOrders.add(i);
-			}
-			
-			// replace full orderSet back into orderMap
-			orderMap.put(o.getNickname(), clientOrders);
 			
 			//persistence
 			if(PERSISTENCE){
@@ -435,20 +418,6 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
-	private boolean manySells(Set<Order> clientOrders){
-		int sells = 0;
-		for(Order o : clientOrders){
-			if(o.isSellOrder()){
-				sells++;
-			}
-		}
-		if(sells >= MAX_SELLS_NUMBER){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
 	
 	private void saveToFile(Order o){
 		try {	
