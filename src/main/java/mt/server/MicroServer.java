@@ -43,7 +43,7 @@ import mt.filter.AnalyticsFilter;
  *
  */
 
-//US
+//US version
 public class MicroServer implements MicroTraderServer {
 	
 	public static void main(String[] args) {
