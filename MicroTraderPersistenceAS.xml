@@ -1,3 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <XML>	
+<Order Customer="Maria" Id="3" Price="1.0" Stock="edp" Type="Sell" Units="15"/>
+<Order Customer="Maria" Id="4" Price="1.0" Stock="pt" Type="Sell" Units="25"/>
+<Order Customer="Maria" Id="5" Price="1.0" Stock="abb" Type="Sell" Units="35"/>
+<Order Customer="Maria" Id="6" Price="1.0" Stock="cp" Type="Sell" Units="45"/>
+<Order Customer="Maria" Id="7" Price="1.0" Stock="ren" Type="Sell" Units="55"/>
+<Order Customer="Maria" Id="8" Price="1.0" Stock="att" Type="Sell" Units="65"/>
+<Order Customer="Maria" Id="9" Price="1.0" Stock="edp" Type="Buy" Units="15"/>
+<Order Customer="Manuel" Id="10" Price="1.0" Stock="edp" Type="Buy" Units="15"/>
 </XML>
