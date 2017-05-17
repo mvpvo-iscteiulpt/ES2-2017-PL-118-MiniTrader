@@ -130,7 +130,7 @@ public class MicroServer implements MicroTraderServer {
 							ultimoID++;
 							msg.getOrder().setServerOrderID(ultimoID);
 						}
-						notifyAllClients(msg.getOrder());
+//						notifyAllClients(msg.getOrder());
 						processNewOrder(msg);
 					} catch (ServerException e) {
 						serverComm.sendError(msg.getSenderNickname(), e.getMessage());
@@ -275,6 +275,8 @@ public class MicroServer implements MicroTraderServer {
 	
 			// reset the set of changed orders
 			updatedOrders = new HashSet<>();
+			
+			notifyAllClients(o);
 			
 			// persistence
 			if(PERSISTENCE){
