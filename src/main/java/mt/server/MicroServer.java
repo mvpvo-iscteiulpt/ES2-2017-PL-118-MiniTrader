@@ -444,7 +444,7 @@ public class MicroServer implements MicroTraderServer {
 	         // Save XML document
 	         Transformer transformer = TransformerFactory.newInstance().newTransformer();
 	         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-	         StreamResult result = new StreamResult(new FileOutputStream("MicroTraderPersistenceAS.xml"));
+	         StreamResult result = new StreamResult(new FileOutputStream("C:\\Users\\Miguel\\git\\ES2-2017-PL-118-MiniTrader\\MicroTraderPersistenceAS.xml"));
 	         DOMSource source = new DOMSource(doc);
 	         transformer.transform(source, result);
 	         
