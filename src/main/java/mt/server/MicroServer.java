@@ -241,6 +241,7 @@ public class MicroServer implements MicroTraderServer {
 			JOptionPane.showMessageDialog(null,"Too many sell orders from same client. Order rejected." ,"Warning", 2);
 		}
 		else{
+			
 			Set<Order> temp = new HashSet<Order>();
 			for(Order a : clientOrders){
 				if(o.getStock().equals(a.getStock())){
@@ -280,6 +281,8 @@ public class MicroServer implements MicroTraderServer {
 			
 			// replace full orderSet back into orderMap
 			orderMap.put(o.getNickname(), clientOrders);
+			
+			notifyAllClients(o);
 		}
 	}
 	
