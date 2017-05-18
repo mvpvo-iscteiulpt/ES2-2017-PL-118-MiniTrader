@@ -411,21 +411,12 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
-	private void showOrders(){
-		Set<String> keys = orderMap.keySet();
-		for(String s : keys){
-			Set<Order> ordens = orderMap.get(s);
-			System.out.println("--------");
-			for(Order o : ordens){
-				System.out.println(	"[" + o.getNickname()+
-									";" + o.getStock()+
-									";" + o.getNumberOfUnits()+
-									";" + o.getPricePerUnit()+
-									"]");
-			}
-		}
-	}
-	
+	/**
+	 * 
+	 * @param clientOrders
+	 * @return true if total number of sell orders is 5 or more; false otherwise
+	 * 
+	 */
 	private boolean manySells(Set<Order> clientOrders){
 		int sells = 0;
 		for(Order o : clientOrders){
