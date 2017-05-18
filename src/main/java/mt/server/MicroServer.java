@@ -432,6 +432,15 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param Order o
+	 * @param int unit
+	 * 
+	 * save order into XML document;
+	 * in this version, client remains anonymous.
+	 */
+	
 	private void saveToFile(Order o, int units){
 		try {	
 	         File inputFile = new File("C:\\Users\\Miguel\\git\\ES2-2017-PL-118-MiniTrader\\MicroTraderPersistenceUS.xml");
