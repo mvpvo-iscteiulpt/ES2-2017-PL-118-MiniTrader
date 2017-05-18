@@ -408,20 +408,6 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
-	private void showOrders(){
-		Set<String> keys = orderMap.keySet();
-		for(String s : keys){
-			Set<Order> ordens = orderMap.get(s);
-			for(Order o : ordens){
-				System.out.println(	"[" + o.getNickname()+
-									";" + o.getStock()+
-									";" + o.getNumberOfUnits()+
-									";" + o.getPricePerUnit()+
-									"]");
-			}
-		}
-	}
-	
 	
 	private void saveToFile(Order o, int units){
 		try {	
