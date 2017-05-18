@@ -411,6 +411,12 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param clientOrders
+	 * @return true if total number of sell orders is 5 or more; false otherwise
+	 * 
+	 */
 	private boolean manySells(Set<Order> clientOrders){
 		int sells = 0;
 		for(Order o : clientOrders){
