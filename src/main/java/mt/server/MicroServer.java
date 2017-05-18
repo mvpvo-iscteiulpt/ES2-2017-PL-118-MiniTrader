@@ -408,7 +408,14 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
-	
+	/**
+	 * 
+	 * @param Order o
+	 * @param int units
+	 * 
+	 * save order into XML document;
+	 * in this version, client name is public
+	 */
 	private void saveToFile(Order o, int units){
 		try {	
 			
