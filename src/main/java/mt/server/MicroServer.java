@@ -460,7 +460,7 @@ public class MicroServer implements MicroTraderServer {
 	         // Add new node to XML document root element
 	         Node n = doc.getDocumentElement();
 	         n.appendChild(newElement);
-	         //
+	         
 	         // Save XML document
 	         Transformer transformer = TransformerFactory.newInstance().newTransformer();
 	         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
