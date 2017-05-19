@@ -411,6 +411,12 @@ public class MicroServer implements MicroTraderServer {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param clientOrders
+	 * @return true if total number of sell orders is 5 or more; false otherwise
+	 * 
+	 */
 	private boolean manySells(Set<Order> clientOrders){
 		int sells = 0;
 		for(Order o : clientOrders){
@@ -425,6 +431,15 @@ public class MicroServer implements MicroTraderServer {
 			return false;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param Order o
+	 * @param int unit
+	 * 
+	 * save order into XML document;
+	 * in this version, client remains anonymous.
+	 */
 	
 	private void saveToFile(Order o, int units){
 		try {	
