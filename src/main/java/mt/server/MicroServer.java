@@ -441,7 +441,7 @@ public class MicroServer implements MicroTraderServer {
 	         newElement.setAttribute("Stock", o.getStock());
 	         newElement.setAttribute("Units", ""+units);
 	         newElement.setAttribute("Price", ""+o.getPricePerUnit());
-	  
+	         
 	         // Add new node to XML document root element
 	         Node n = doc.getDocumentElement();
 	         n.appendChild(newElement);
