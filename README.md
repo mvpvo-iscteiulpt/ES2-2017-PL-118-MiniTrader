@@ -2,11 +2,7 @@
 
 PL-118
 
-video AS:
-
-video EU:
-
-video US:
+video: https://youtu.be/3C0Q3f6dZ28
 
 Simple Marven Project:
 https://www.youtube.com/watch?v=HDP0VxlmFUQ
